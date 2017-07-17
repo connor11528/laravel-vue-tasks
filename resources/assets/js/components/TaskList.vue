@@ -2,21 +2,22 @@
     <div class='row'>
         <h1>My Tasks</h1>
         <h4>New Task</h4>
-        <form action="#" @submit.prevent="edit ? updateTask(task.id) : createTask()">
+        <form action="#" @submit.prevent="createTask()">
             <div class="input-group">
                 <input v-model="task.body" type="text" name="body" class="form-control" autofocus>
                 <span class="input-group-btn">
-                    <button v-show="!edit" type="submit" class="btn btn-primary">New Task</button>
-                    <button v-show="edit" type="submit" class="btn btn-primary">Edit Task</button>
+                    <button type="submit" class="btn btn-primary">New Task</button>
                 </span>
             </div>
         </form>
         <h4>All Tasks</h4>
         <ul class="list-group">
-            <li class="list-group-item" v-for="task in list">
+            <li v-if='list.length === 0'>There are no tasks yet!</li>
+            <li class="list-group-item" v-for="(task, index) in list">
+
                 {{ task.body }}
-                <button @click="showTask(task.id)" class="btn btn-primary btn-xs">Edit</button>
-                <button @click="deleteTask(task.id)" class="btn btn-danger btn-xs">Delete</button>
+
+                <button @click="deleteTask(task.id)" class="btn btn-danger btn-xs pull-right">Delete</button>
             </li>
         </ul>
     </div>
@@ -24,9 +25,8 @@
 
 <script>
     export default {
-        data: function() {
+        data() {
             return {
-                edit: false,
                 list: [],
                 task: {
                     id: '',
@@ -35,47 +35,34 @@
             };
         },
         
-        mounted: function() {
+        created() {
             this.fetchTaskList();
         },
         
         methods: {
-            fetchTaskList: function() {
-                var vm = this;
-                axios.get('api/tasks').then(function (response) {
-                    vm.list = response.data;
+            fetchTaskList() {
+                axios.get('api/tasks').then((res) => {
+                    this.list = res.data;
                 });
             },
  
-            createTask: function () {
+            createTask() {
                 axios.post('api/tasks', this.task)
                     .then((res) => {
-                        console.log(res);
                         this.task.body = '';
                         this.edit = false;
                         this.fetchTaskList();
+
                     })
                     .catch((err) => console.error(err));
             },
  
-            updateTask: function(id) {
-                axios.patch('api/tasks/' + id, this.task);
-                this.task.body = '';
-                this.edit = false;
-                this.fetchTaskList();
-            },
- 
-            showTask: function(id) {
-                axios.get('api/tasks/' + id).then(function(response) {
-                    this.task.id = response.data.id
-                    this.task.body = response.data.body
-                })
-                this.edit = true
-            },
- 
-            deleteTask: function (id) {
-                axios.delete('api/task/' + id)
-                this.fetchTaskList()
+            deleteTask(id) {
+                axios.delete('api/tasks/' + id)
+                    .then((res) => {
+                        this.fetchTaskList()
+                    })
+                    .catch((err) => console.error(err));
             },
         }
     }

@@ -41929,11 +41929,11 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
     data: function data() {
         return {
-            edit: false,
             list: [],
             task: {
                 id: '',
@@ -41941,50 +41941,38 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             }
         };
     },
-
-    mounted: function mounted() {
+    created: function created() {
         this.fetchTaskList();
     },
 
+
     methods: {
         fetchTaskList: function fetchTaskList() {
-            var vm = this;
-            axios.get('api/tasks').then(function (response) {
-                vm.list = response.data;
-            });
-        },
-
-        createTask: function createTask() {
             var _this = this;
 
+            axios.get('api/tasks').then(function (res) {
+                _this.list = res.data;
+            });
+        },
+        createTask: function createTask() {
+            var _this2 = this;
+
             axios.post('api/tasks', this.task).then(function (res) {
-                console.log(res);
-                _this.task.body = '';
-                _this.edit = false;
-                _this.fetchTaskList();
+                _this2.task.body = '';
+                _this2.edit = false;
+                _this2.fetchTaskList();
             }).catch(function (err) {
                 return console.error(err);
             });
         },
-
-        updateTask: function updateTask(id) {
-            axios.patch('api/tasks/' + id, this.task);
-            this.task.body = '';
-            this.edit = false;
-            this.fetchTaskList();
-        },
-
-        showTask: function showTask(id) {
-            axios.get('api/tasks/' + id).then(function (response) {
-                this.task.id = response.data.id;
-                this.task.body = response.data.body;
-            });
-            this.edit = true;
-        },
-
         deleteTask: function deleteTask(id) {
-            axios.delete('api/task/' + id);
-            this.fetchTaskList();
+            var _this3 = this;
+
+            axios.delete('api/tasks/' + id).then(function (res) {
+                _this3.fetchTaskList();
+            }).catch(function (err) {
+                return console.error(err);
+            });
         }
     }
 });
@@ -42003,7 +41991,7 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     on: {
       "submit": function($event) {
         $event.preventDefault();
-        _vm.edit ? _vm.updateTask(_vm.task.id) : _vm.createTask()
+        _vm.createTask()
       }
     }
   }, [_c('div', {
@@ -42030,52 +42018,30 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
         _vm.task.body = $event.target.value
       }
     }
-  }), _vm._v(" "), _c('span', {
-    staticClass: "input-group-btn"
-  }, [_c('button', {
-    directives: [{
-      name: "show",
-      rawName: "v-show",
-      value: (!_vm.edit),
-      expression: "!edit"
-    }],
-    staticClass: "btn btn-primary",
-    attrs: {
-      "type": "submit"
-    }
-  }, [_vm._v("New Task")]), _vm._v(" "), _c('button', {
-    directives: [{
-      name: "show",
-      rawName: "v-show",
-      value: (_vm.edit),
-      expression: "edit"
-    }],
-    staticClass: "btn btn-primary",
-    attrs: {
-      "type": "submit"
-    }
-  }, [_vm._v("Edit Task")])])])]), _vm._v(" "), _c('h4', [_vm._v("All Tasks")]), _vm._v(" "), _c('ul', {
+  }), _vm._v(" "), _vm._m(0)])]), _vm._v(" "), _c('h4', [_vm._v("All Tasks")]), _vm._v(" "), _c('ul', {
     staticClass: "list-group"
-  }, _vm._l((_vm.list), function(task) {
+  }, [(_vm.list.length === 0) ? _c('li', [_vm._v("There are no tasks yet!")]) : _vm._e(), _vm._v(" "), _vm._l((_vm.list), function(task, index) {
     return _c('li', {
       staticClass: "list-group-item"
-    }, [_vm._v("\n            " + _vm._s(task.body) + "\n            "), _c('button', {
-      staticClass: "btn btn-primary btn-xs",
-      on: {
-        "click": function($event) {
-          _vm.showTask(task.id)
-        }
-      }
-    }, [_vm._v("Edit")]), _vm._v(" "), _c('button', {
-      staticClass: "btn btn-danger btn-xs",
+    }, [_vm._v("\n\n            " + _vm._s(task.body) + "\n\n            "), _c('button', {
+      staticClass: "btn btn-danger btn-xs pull-right",
       on: {
         "click": function($event) {
           _vm.deleteTask(task.id)
         }
       }
     }, [_vm._v("Delete")])])
-  }))])
-},staticRenderFns: []}
+  })], 2)])
+},staticRenderFns: [function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
+  return _c('span', {
+    staticClass: "input-group-btn"
+  }, [_c('button', {
+    staticClass: "btn btn-primary",
+    attrs: {
+      "type": "submit"
+    }
+  }, [_vm._v("New Task")])])
+}]}
 module.exports.render._withStripped = true
 if (false) {
   module.hot.accept()

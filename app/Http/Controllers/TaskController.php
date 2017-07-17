@@ -9,31 +9,22 @@ class TaskController extends Controller
 {
     public function index()
     {
-        return Task::all();
+        return Task::latest()->get();
     }
 
     public function store(Request $request)
     {
-        // $this->validate([
-        //     'body' => 'required|max:500'
-        // ]);
-        
+        $this->validate($request, [
+            'body' => 'required|max:500'
+        ]);
+
         return Task::create([ 'body' => request('body') ]);
     }
 
-    public function show(Task $task)
+    public function destroy($id)
     {
-        return $task;
-    }
-
-    public function update(Request $request, Task $task)
-    {
-        Task::findOrFail($task)->update([ 'body' => request('body') ]);
-    }
-
-    public function destroy(Task $task)
-    {
-        Task::delete($task);
+        $task = Task::findOrFail($id);
+        $task->delete();
         return 204;
     }
 }
