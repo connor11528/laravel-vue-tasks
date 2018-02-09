@@ -11,7 +11,11 @@
             </div>
         </form>
         <h4>All Tasks</h4>
-        <ul class="list-group">
+        <div class="row text-center" v-if="loading">
+            <rotate-square2></rotate-square2>
+        </div>
+
+        <ul class="list-group" v-if="!loading">
             <li v-if='list.length === 0'>There are no tasks yet!</li>
             <li class="list-group-item" v-for="(task, index) in list">
 
@@ -24,9 +28,15 @@
 </template>
 
 <script>
-    export default {
+	import {RotateSquare2} from 'vue-loading-spinner';
+
+	export default {
+		components: {
+			RotateSquare2
+		},
         data() {
             return {
+            	loading: true,
                 list: [],
                 task: {
                     id: '',
@@ -41,18 +51,18 @@
         
         methods: {
             fetchTaskList() {
-                axios.get('api/tasks').then((res) => {
-                    this.list = res.data;
-                });
+                axios.get('api/tasks')
+                    .then((res) => {
+                            this.list = res.data;
+                            this.loading = false;
+                    })
+			        .catch((err) => console.error(err));;
             },
  
             createTask() {
                 axios.post('api/tasks', this.task)
                     .then((res) => {
                         this.task.body = '';
-                        this.edit = false;
-                        this.fetchTaskList();
-
                     })
                     .catch((err) => console.error(err));
             },
