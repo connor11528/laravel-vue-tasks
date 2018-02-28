@@ -7,6 +7,8 @@ Link to Medium article: [Build a Task List with Laravel 5.4 and Vue 2](https://m
 
 ### Todo
 
+- Admin panel ([tutorial](https://nick-basile.com/blog/post/how-to-build-an-admin-in-laravel-using-tdd))
+
 - [ ] Add pagination using [hootlex/vuejs-paginator](https://github.com/hootlex/vuejs-paginator) (can also see helpful [laracast episode](https://laracasts.com/series/lets-build-a-forum-with-laravel/episodes/16) for building from scratch)
 
 - [ ] Edit tasks
